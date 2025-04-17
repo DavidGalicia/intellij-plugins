@@ -1,7 +1,7 @@
 <idea-plugin url="https://github.com/JetBrains/intellij-plugins/tree/master/vuejs" package="org.jetbrains.vuejs">
   <!--suppress PluginXmlCapitalization -->
-  <name>Vue.js</name>
-  <id>org.jetbrains.plugins.vue</id>
+  <name>Vue.js-development</name>
+  <id>org.jetbrains.plugins.vue.development</id>
   <description><![CDATA[
     <p>Provides <a href="https://vuejs.org/">Vue.js</a> support to all JetBrains IDEs that
     <a href="https://www.jetbrains.com/products/#lang=js&type=ide">support JavaScript</a>.</p>
@@ -35,6 +35,7 @@
     <plugin id="com.intellij.css"/>
     <plugin id="intellij.webpack"/>
     <plugin id="org.intellij.plugins.postcss"/>
+    <plugin id="com.intellij.modules.json"/>
   </dependencies>
   <depends optional="true" config-file="js-debugger.xml">JavaScriptDebugger</depends>
   <depends optional="true" config-file="vue-markdown.xml">org.intellij.plugins.markdown</depends>

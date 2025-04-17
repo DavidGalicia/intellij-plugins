@@ -77,7 +77,7 @@ private fun contributeCustomProperties(
   source: PsiElement,
   result: MutableMap<String, JSRecordType.PropertySignature>,
 ) {
-  result.putAll(resolveSymbolFromAugmentations(source, VUE_MODULE_FILTER, CUSTOM_PROPERTIES))
+  result.putAll(resolveSymbolFromAugmentations(source, VUE_MODULE, CUSTOM_PROPERTIES))
 }
 
 private fun contributeDefaultInstanceProperties(
