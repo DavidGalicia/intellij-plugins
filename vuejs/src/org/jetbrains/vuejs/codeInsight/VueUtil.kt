@@ -64,6 +64,7 @@ import org.jetbrains.vuejs.types.asCompleteType
 import org.jetbrains.vuejs.web.VUE_COMPONENTS
 import java.util.*
 import kotlin.reflect.KClass
+import com.intellij.lang.ecmascript6.psi.ES6ExportSpecifier
 
 const val SETUP_ATTRIBUTE_NAME = "setup"
 const val REF_ATTRIBUTE_NAME = "ref"
@@ -178,6 +179,17 @@ fun objectLiteralFor(element: PsiElement?): JSObjectLiteralExpression? {
 }
 
 fun <T : PsiElement> resolveElementTo(element: PsiElement?, vararg classes: KClass<out T>): T? {
+  if (element is ES6ExportSpecifier) {
+    val specifier = element
+
+    if (specifier.declaration?.fromClause?.referenceText?.contains(".vue") == true) {
+      val psiFile = specifier.declaration?.fromClause?.resolveReferencedElements()?.first()
+
+      @Suppress("UNCHECKED_CAST")
+      return psiFile as T
+    }
+  }
+
   val queue = ArrayDeque<PsiElement>()
   queue.add(element ?: return null)
   val visited = HashSet<PsiElement>()

@@ -18,6 +18,12 @@ import org.jetbrains.vuejs.codeInsight.resolveElementTo
 import org.jetbrains.vuejs.lang.html.isVueFileName
 import org.jetbrains.vuejs.model.VueModelManager
 import org.jetbrains.vuejs.model.VueRegularComponent
+import com.intellij.lang.javascript.psi.JSReferenceExpression
+import com.intellij.lang.ecmascript6.psi.ES6ExportDefaultAssignment
+import com.intellij.lang.ecmascript6.psi.ES6ExportSpecifier
+import com.intellij.lang.ecmascript6.resolve.ES6PsiUtil
+import com.intellij.lang.javascript.psi.JSFile
+import com.intellij.psi.PsiFile
 
 class VueTypedComponent(
   override val source: PsiElement,
@@ -29,6 +35,34 @@ class VueTypedComponent(
 
   override val thisType: JSType
     get() = CachedValuesManager.getCachedValue(source) {
+      if (source is ES6ExportSpecifier) {
+        val file = resolveElementTo(source, PsiFile::class)
+        val isTypeDeclarationFile = (file is JSFile) && (file.name.contains(".d.ts") || file.name.contains(".d.mts"))
+        if (isTypeDeclarationFile) {
+          val export = ES6PsiUtil.resolveSymbolInModule("default", file, file).first().element
+          if (export is ES6ExportDefaultAssignment) {
+            val exportedVar = export.children.first()
+            if (exportedVar is JSReferenceExpression) {
+              val componentSymbol = exportedVar.text
+              val component = ES6PsiUtil.resolveSymbolInModule(componentSymbol, file, file).first().element
+              if (component is TypeScriptVariable) {
+                val jsType = component.jsType
+                if (jsType != null) {
+                  val resolvedJsType = JSApplyNewType(jsType, jsType.source).substitute()
+
+                  return@getCachedValue CachedValueProvider.Result.create(resolvedJsType, PsiModificationTracker.MODIFICATION_COUNT)
+                }
+              }
+            }
+          }
+          if (isVueFileName(file.name)) {
+            // TODO: process .vue file and return jsType
+          }
+
+          return@getCachedValue null
+        }
+      }
+
       CachedValueProvider.Result.create(
         resolveElementTo(source, TypeScriptVariable::class, TypeScriptPropertySignature::class, TypeScriptClass::class)
           ?.let { componentDefinition ->
