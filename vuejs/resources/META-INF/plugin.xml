@@ -1,9 +1,9 @@
 <idea-plugin package="org.jetbrains.vuejs" allow-bundled-update="true">
   <!--suppress PluginXmlCapitalization -->
-  <name>Vue.js</name>
-  <id>org.jetbrains.plugins.vue</id>
+  <name>Vue.js: Custom</name>
+  <id>org.jetbrains.plugins.vue.custom</id>
   <description><![CDATA[
-    <p>Provides <a href="https://vuejs.org/">Vue.js</a> support to all JetBrains IDEs that
+    <p>Custom build of the Vue.js plugin. Provides <a href="https://vuejs.org/">Vue.js</a> support to all JetBrains IDEs that
     <a href="https://www.jetbrains.com/products/#lang=js&type=ide">support JavaScript</a>.</p>
 
     <h2>Features</h2>
