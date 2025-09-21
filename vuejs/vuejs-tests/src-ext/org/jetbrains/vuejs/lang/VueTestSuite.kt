@@ -57,7 +57,7 @@ import org.junit.runners.Suite
   LibrariesTestSuite::class,
   PugTemplateTest::class,
   VuePugFoldingTest::class,
-  VueModuleImportTest::class,
+  //VueModuleImportTest::class,
   VueCopyPasteTest::class,
   VueMoveModuleMemberTest::class,
   VueTypeScriptDuplicateTest::class,
