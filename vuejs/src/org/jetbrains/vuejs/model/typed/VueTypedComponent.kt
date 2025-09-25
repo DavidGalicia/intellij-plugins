@@ -18,6 +18,12 @@ import org.jetbrains.vuejs.codeInsight.resolveElementTo
 import org.jetbrains.vuejs.lang.html.isVueFileName
 import org.jetbrains.vuejs.model.VueModelManager
 import org.jetbrains.vuejs.model.VueRegularComponent
+import com.intellij.lang.ecmascript6.psi.ES6ExportDefaultAssignment
+import com.intellij.lang.ecmascript6.psi.ES6ExportSpecifier
+import com.intellij.lang.ecmascript6.resolve.ES6PsiUtil
+import com.intellij.lang.javascript.psi.JSFile
+import com.intellij.lang.javascript.psi.JSReferenceExpression
+import com.intellij.psi.PsiFile
 
 class VueTypedComponent(
   override val source: PsiElement,
@@ -27,9 +33,45 @@ class VueTypedComponent(
   override val nameElement: PsiElement?
     get() = null
 
+  private fun resolveDefaultComponentConstructorFromDtsFile(file: PsiFile?): JSType? {
+    val jsFile = file as? JSFile ?: return null
+    val export = ES6PsiUtil.resolveSymbolInModule("default", jsFile, jsFile).first().element
+
+    if (export is ES6ExportDefaultAssignment) {
+      val exportedVar = export.children.first()
+
+      if (exportedVar is JSReferenceExpression) {
+        val componentSymbol = exportedVar.text
+        val component = ES6PsiUtil.resolveSymbolInModule(componentSymbol, jsFile, jsFile).first().element
+        if (component is TypeScriptVariable) {
+          val jsType = component.jsType ?: return null
+
+          return JSApplyNewType(jsType, jsType.source).substitute()
+        }
+      }
+    }
+
+    return null
+  }
+
+  private fun resolveFromES6ExportSpecifier(source: ES6ExportSpecifier): JSType? {
+    if (source.declaration?.fromClause?.referenceText?.contains(".vue") == true) {
+      val declaration = source.declaration ?: return null
+      val file = resolveDtsFileFromDeclaration(declaration)
+      return resolveDefaultComponentConstructorFromDtsFile(file)
+    }
+
+    return null
+  }
+
   override val thisType: JSType
     get() = CachedValuesManager.getCachedValue(source) {
-      CachedValueProvider.Result.create(
+      if (source is ES6ExportSpecifier) {
+        val resolved = resolveFromES6ExportSpecifier(source)
+        return@getCachedValue CachedValueProvider.Result.create(resolved, PsiModificationTracker.MODIFICATION_COUNT)
+      }
+
+      return@getCachedValue CachedValueProvider.Result.create(
         resolveElementTo(source, TypeScriptVariable::class, TypeScriptPropertySignature::class, TypeScriptClass::class)
           ?.let { componentDefinition ->
             when (componentDefinition) {

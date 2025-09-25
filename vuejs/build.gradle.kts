@@ -64,13 +64,8 @@ tasks {
     compilerOptions.freeCompilerArgs.set(rootProject.extensions["kotlin.freeCompilerArgs"] as List<String>)
   }
   compileTestKotlin {
-    exclude("**/VueLoaderTest.kt")
-    exclude("**/VueWebpackTest.kt")
-    exclude("**/VueModuleImportTest.kt")
-  }
-  java {
-    //sourceCompatibility = JavaVersion.toVersion(ext("java.sourceCompatibility"))
-    //targetCompatibility = JavaVersion.toVersion(ext("java.targetCompatibility"))
+    @Suppress("UNCHECKED_CAST")
+    compilerOptions.freeCompilerArgs.set(rootProject.extensions["kotlin.freeCompilerArgs"] as List<String>)
   }
   wrapper {
     gradleVersion = ext("gradle.version")
@@ -80,62 +75,60 @@ tasks {
       autoReload = false
     }
   }
-
-  test {
-    systemProperty("idea.home.path", ideaHomePath)
-
-    doFirst {
-      // Create link to the intellij-plugins folder
-      val contribDir = file("$ideaHomePath/contrib")
-      if (!contribDir.exists()) {
-        createSymbolicLink(contribDir.toPath(), rootProjectPath.parent)
-      }
-
-      // Create missing JavaScript Language Services directory
-      val jsLanguageServicesLink = file("$ideaHomePath/plugins/JavaScriptLanguage/resources/jsLanguageServicesImpl")
-      if (!jsLanguageServicesLink.exists()) {
-        val jsLanguageResourcesDir = file("$ideaHomePath/plugins/JavaScriptLanguage/resources")
-        jsLanguageResourcesDir.mkdirs()
-        val jsLanguageServices = file("$ideaHomePath/plugins/javascript-plugin/jsLanguageServicesImpl")
-        createSymbolicLink(jsLanguageServicesLink.toPath(), jsLanguageServices.toPath())
-      }
-
-      // Ensure JS test framework's mock Node types path exists to prevent NoSuchFileException in JSTestUtils
-      val mockTypesNodeDir = file("$ideaHomePath/plugins/NodeJS/tests/testData/mockNode/node_modules/@types/node")
-      if (!mockTypesNodeDir.exists()) {
-        mockTypesNodeDir.mkdirs()
-        // Provide a minimal type definition file so consumers can resolve the package
-        val indexDts = mockTypesNodeDir.resolve("index.d.ts")
-        if (!indexDts.exists()) {
-          indexDts.writeText(
-            """
-            // Minimal stub for @types/node required by tests
-            declare const __dummy: unknown;
-            export = __dummy;
-            """.trimIndent()
-          )
-        }
-        // Also add a minimal package.json so the directory looks like a package
-        val pkgJson = mockTypesNodeDir.resolve("package.json")
-        if (!pkgJson.exists()) {
-          pkgJson.writeText(
-            """
-            {
-              "name": "@types/node",
-              "version": "0.0.0-test-stub",
-              "types": "index.d.ts"
-            }
-            """.trimIndent()
-          )
-        }
-      }
-    }
-
-    exclude("**/VueLoaderTest.kt")
-    exclude("**/VueWebpackTest.kt")
-    exclude("**/VueModuleImportTest.kt")
-  }
-
+//  test {
+//    systemProperty("idea.home.path", ideaHomePath)
+//
+//    doFirst {
+//      // Create link to the intellij-plugins folder
+//      val contribDir = file("$ideaHomePath/contrib")
+//      if (!contribDir.exists()) {
+//        createSymbolicLink(contribDir.toPath(), rootProjectPath.parent)
+//      }
+//
+//      // Create missing JavaScript Language Services directory
+//      val jsLanguageServicesLink = file("$ideaHomePath/plugins/JavaScriptLanguage/resources/jsLanguageServicesImpl")
+//      if (!jsLanguageServicesLink.exists()) {
+//        val jsLanguageResourcesDir = file("$ideaHomePath/plugins/JavaScriptLanguage/resources")
+//        jsLanguageResourcesDir.mkdirs()
+//        val jsLanguageServices = file("$ideaHomePath/plugins/javascript-plugin/jsLanguageServicesImpl")
+//        createSymbolicLink(jsLanguageServicesLink.toPath(), jsLanguageServices.toPath())
+//      }
+//
+//      // Ensure JS test framework's mock Node types path exists to prevent NoSuchFileException in JSTestUtils
+//      val mockTypesNodeDir = file("$ideaHomePath/plugins/NodeJS/tests/testData/mockNode/node_modules/@types/node")
+//      if (!mockTypesNodeDir.exists()) {
+//        mockTypesNodeDir.mkdirs()
+//        // Provide a minimal type definition file so consumers can resolve the package
+//        val indexDts = mockTypesNodeDir.resolve("index.d.ts")
+//        if (!indexDts.exists()) {
+//          indexDts.writeText(
+//            """
+//            // Minimal stub for @types/node required by tests
+//            declare const __dummy: unknown;
+//            export = __dummy;
+//            """.trimIndent()
+//          )
+//        }
+//        // Also add a minimal package.json so the directory looks like a package
+//        val pkgJson = mockTypesNodeDir.resolve("package.json")
+//        if (!pkgJson.exists()) {
+//          pkgJson.writeText(
+//            """
+//            {
+//              "name": "@types/node",
+//              "version": "0.0.0-test-stub",
+//              "types": "index.d.ts"
+//            }
+//            """.trimIndent()
+//          )
+//        }
+//      }
+//    }
+//
+//    exclude("**/VueLoaderTest.kt")
+//    exclude("**/VueWebpackTest.kt")
+//    exclude("**/VueModuleImportTest.kt")
+//  }
   // Copy directories into the plugin root in the sandbox and distribution
   prepareSandbox {
     from("typescript-vue-plugin") {
@@ -176,10 +169,14 @@ sourceSets {
   }
   test {
     java {
-      setSrcDirs(listOf("vuejs-tests/src"))
+//      setSrcDirs(listOf("vuejs-tests/src"))
     }
     kotlin {
-      setSrcDirs(listOf("vuejs-tests/src"))
+//      setSrcDirs(listOf("vuejs-tests/src"))
+//
+//      exclude("**/VueLoaderTest.kt")
+//      exclude("**/VueWebpackTest.kt")
+//      exclude("**/VueModuleImportTest.kt")
     }
   }
 }

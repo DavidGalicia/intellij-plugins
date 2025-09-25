@@ -24,8 +24,7 @@ data class VueTypedGlobal(
 
   private val typedGlobalComponents: Map<String, VueComponent> =
     CachedValuesManager.getCachedValue(source) {
-      val result = resolveSymbolPropertiesFromAugmentations(source, VUE_CORE_MODULES, GLOBAL_COMPONENTS)
-        .mapValues { VueTypedComponent(it.value, it.key) }
+      val result = resolveSymbolPropertiesFromAugmentations2(source, VUE_CORE_MODULES, GLOBAL_COMPONENTS)
 
       CachedValueProvider.Result.create(result, PsiModificationTracker.MODIFICATION_COUNT)
     }
