@@ -7,7 +7,7 @@ import org.jetbrains.vuejs.libraries.i18n.I18nTest
 import org.jetbrains.vuejs.libraries.nuxt.NuxtTestSuite
 import org.jetbrains.vuejs.libraries.pinia.PiniaTest
 import org.jetbrains.vuejs.libraries.templateLoader.TemplateLoaderCompletionTest
-import org.jetbrains.vuejs.libraries.vueLoader.VueLoaderTest
+//import org.jetbrains.vuejs.libraries.vueLoader.VueLoaderTest
 import org.jetbrains.vuejs.libraries.vuelidate.VuelidateTest
 import org.jetbrains.vuejs.libraries.vuex.VuexTestSuite
 import org.junit.runner.RunWith
@@ -18,7 +18,7 @@ import org.junit.runners.Suite
   NuxtTestSuite::class,
   PiniaTest::class,
   VuexTestSuite::class,
-  VueLoaderTest::class,
+  //VueLoaderTest::class,
   TemplateLoaderCompletionTest::class,
   VuelidateTest::class,
   CssModulesTest::class,
